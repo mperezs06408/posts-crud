@@ -1,0 +1,16 @@
+.modal{
+    &__content{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 320px;
+        min-height: 120px;
+        padding: 5px 15px;
+    }
+    &__btns{
+        display: flex;
+        padding: 5px 15px;
+        justify-content: flex-end;
+    }
+}

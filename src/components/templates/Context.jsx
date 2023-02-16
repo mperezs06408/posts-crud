@@ -5,6 +5,7 @@ export const PostsContext = createContext()
 
 const PostsProvider = ({children}) => {
   const [posts, setPosts] = useState([])
+  const [postsDeleted, setPostsDeleted] = useState(0)
   const [postsFiltered, setPostsFiltered] = useState([])
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
@@ -52,7 +53,9 @@ const PostsProvider = ({children}) => {
     initRow,
     finishRow,
     searchBar,
-    handleSearchBarChange
+    handleSearchBarChange,
+    postsDeleted,
+    setPostsDeleted
   }
   return(
     <PostsContext.Provider value={context}>

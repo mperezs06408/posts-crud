@@ -2,12 +2,13 @@ import Form from '@components/organisms/Form'
 import FormButton from '@components/atoms/FormButton'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { PostsContext } from '@components/templates/Context';
 import { createPost, setPost } from '@/api/APIConsume'
 import TextField from '@mui/material/TextField'
 import { Controller } from 'react-hook-form'
 import PageLayout from '../components/templates/PageLayout'
+import ModalComponent from '@components/atoms/ModalComponent'
 
 function PostForm(){
     const {
@@ -20,8 +21,20 @@ function PostForm(){
     } = useParams();
     const {
         posts,
-        setPosts
+        setPosts,
+        postsDeleted
     } = useContext(PostsContext);
+    const [modalData, setModalData] = useState({
+        modalOpen: false,
+        modalTitle:'',
+        modalSubtitle:''
+    })
+    const {
+        modalOpen,
+        modalTitle,
+        modalSubtitle
+    } = modalData;
+
     const navigate = useNavigate();
 
     const onSubmit = async (data) => {
@@ -50,7 +63,12 @@ function PostForm(){
                 postListCopy[postIndexOf] = newPost
 
                 setPosts(postListCopy)
-                navigate('/');
+                setModalData({
+                    modalOpen: true,
+                    modalTitle: 'Post updated!',
+                    modalSubtitle: `#${post.id}: ${postContent.title.toUpperCase()}`
+                })
+                // navigate('/');
             }
         } else {
             try {
@@ -59,19 +77,32 @@ function PostForm(){
                 setPosts([
                     {
                         ...newPost.data,
-                        id: posts.length + 1
+                        id: posts.length + postsDeleted + 1
                     },
                     ...posts
                 ])
-                navigate('/');
+                setModalData({
+                    modalOpen: true,
+                    modalTitle: 'Post created!',
+                    modalSubtitle: `#${posts.length + postsDeleted + 1}: ${postContent.title.toUpperCase()}`
+                })
+                // navigate('/');
             } catch(e){
                 console.error(`Error during post creation: ${e}`)
             }
         }
 
     }
-    const onCancelFormAction = () => {
+    const onReturnToDashboard = () => {
         navigate('/')
+    }
+    const onCreatePostAgain = () => {
+        setModalData({
+            modalOpen: false,
+            modalTitle:'',
+            modalSubtitle:''
+        })
+        formInputs.map(entry => setValue(entry.id, ''))
     }
 
     const formButtons = [
@@ -80,7 +111,7 @@ function PostForm(){
             type: 'button',
             className: 'secondary',
             label: 'Cancel',
-            onClickAction: onCancelFormAction
+            onClickAction: onReturnToDashboard
         },
         {
             id: 'submitButton',
@@ -165,6 +196,7 @@ function PostForm(){
         >
             <Controller 
                 key={formInputs[0].id}
+                defaultValue={''}
                 name={formInputs[0].id}
                 control={control}
                 rules={formInputs[0].validations}
@@ -184,6 +216,7 @@ function PostForm(){
             />
             <Controller 
                 key={formInputs[1].id}
+                defaultValue={''}
                 name={formInputs[1].id}
                 control={control}
                 rules={formInputs[1].validations}
@@ -203,6 +236,30 @@ function PostForm(){
                 }
             />
         </Form>
+        <ModalComponent
+            isOpen={modalOpen}
+            title={modalTitle}
+            subtitle={modalSubtitle}
+            buttons={
+                <>
+                    {
+                        !idPost && 
+                        <FormButton 
+                            id={'modal-createAgain'}
+                            type={'button'}
+                            label={'Create new post'}
+                            onClick={onCreatePostAgain}
+                        />
+                    }
+                    <FormButton 
+                        id={'modal-continue'}
+                        type={'submit'}
+                        label={'Continue'}
+                        onClick={onReturnToDashboard}
+                    />
+                </>
+            }
+        />
         </PageLayout>
     )
 }

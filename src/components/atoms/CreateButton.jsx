@@ -1,3 +1,5 @@
+import IconButton from "@mui/material/IconButton";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { useNavigate } from "react-router-dom";
 
 function CreateButton() {
@@ -7,9 +9,11 @@ function CreateButton() {
     const handleClick = () => navigate(destinyLocation)
     
     return (
-        <button
+        <IconButton
             onClick={handleClick}
-        ></button>
+        >
+            <AddCircleOutlineIcon fontSize="large" />
+        </IconButton>
     )
 }
 

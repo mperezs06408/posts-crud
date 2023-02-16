@@ -11,15 +11,21 @@ const PostsProvider = ({children}) => {
   const [searchBar, setSearchBar] = useState('')
 
   useEffect(() => {
-    setPostFromServer();
+    if (posts.length === 0) {
+      setPostFromServer();
+    }
     console.log('reload')
   }, []);
 
   useEffect(() => {
-    const postsFilterByElement = posts.filter(post => post.title.includes(searchBar) )
+    let postsFiltered = posts
 
-    setPostsFiltered(postsFilterByElement);
-  }, [searchBar])
+    if (searchBar) {
+      postsFiltered = postsFiltered.filter(post => post.title.includes(searchBar) )
+    }
+
+    setPostsFiltered(postsFiltered);
+  }, [posts, searchBar])
 
   const initRow = () => page * rowsPerPage;
   const finishRow = () => (rowsPerPage * page) + rowsPerPage;
@@ -36,6 +42,7 @@ const PostsProvider = ({children}) => {
   }
 
   const context = {
+    posts,
     postsFiltered,
     setPosts,
     page,

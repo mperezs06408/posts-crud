@@ -2,17 +2,19 @@ import PageLayout from '@components/templates/PageLayout'
 import ToolsBar from '@components/molecules/ToolsBar'
 import PostsTable from '@components/organisms/PostsTable'
 
+const PAGE_DATA = {
+    title: 'Posts Published',
+    ToolsBarLabel: 'Search by Title'
+}
 function Dashboard(){
     return(
         <PageLayout
-            title='Posts published'
+            title={ PAGE_DATA.title }
         >
             <ToolsBar
-                label='Search by title'
+                label={ PAGE_DATA.ToolsBarLabel }
             />
-            <PostsTable>
-
-            </PostsTable>
+            <PostsTable />
         </PageLayout>
     )
 }

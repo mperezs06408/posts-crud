@@ -7,7 +7,7 @@ function Router(){
         <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/form" element={<PostForm />} />
-            <Route path="/form/:slug" element={<PostForm />} />
+            <Route path="/form/:idPost" element={<PostForm />} />
             <Route path="*" element={<h1>404 error</h1>} />
         </Routes>
     )

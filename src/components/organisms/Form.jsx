@@ -1,7 +1,9 @@
+import '@styles/components/Form.scss'
+
 function Form({title, handleSubmit, buttons, children}) {
     return(
         <form className="form" onSubmit={handleSubmit}>
-            <h2 className="form__title">{title}</h2>
+            <h3 className="form__title">{title}</h3>
             <div className="form__inputs">
                 { children }
             </div>

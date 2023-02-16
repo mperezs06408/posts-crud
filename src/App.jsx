@@ -6,8 +6,6 @@ function App() {
   return (
     <BrowserRouter>
       <PostsProvider>
-        <Link to='/form'>FOrm</Link>
-        <Link to='/'>home</Link>
         <Router />
       </PostsProvider>
     </BrowserRouter>

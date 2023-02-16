@@ -60,13 +60,16 @@ function PostsTable(){
     return(
       <Box>
         <TableContainer>
-          <Table sx={{minWidth: 360, maxWidth: 769}} area-label="simple table">
-            <TableHead>
+          <Table sx={{backgroundColor: '#ffffff', minWidth: 360, maxWidth: 769}} area-label="simple table">
+            <TableHead
+              sx={{backgroundColor:'#000'}}
+            >
               <TableRow>
                 {
                   TABLE_COLUMNS.map( column => (
                     <TableCell
                       key={column.id}
+                      sx={{color:'#fff'}}
                     >
                       {column.label}
                     </TableCell>
@@ -80,7 +83,9 @@ function PostsTable(){
                   <TableRow
                     key={post.id}
                   >
-                    <TableCell>
+                    <TableCell
+                      sx={{width:'105px'}}
+                    >
                       <IconButton
                         onClick={() => onEditRow(post.id)}
                       >

@@ -1,6 +1,3 @@
-import Label from '@components/atoms/Label'
-import Input from '@components/atoms/Input'
-import InputContainer from '@components/molecules/InputContainer'
 import Form from '@components/organisms/Form'
 import FormButton from '@components/atoms/FormButton'
 import { useForm } from 'react-hook-form'
@@ -8,12 +5,14 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useContext, useEffect } from 'react'
 import { PostsContext } from '@components/templates/Context';
 import { createPost, setPost } from '@/api/APIConsume'
+import TextField from '@mui/material/TextField'
+import { Controller } from 'react-hook-form'
+import PageLayout from '../components/templates/PageLayout'
 
 function PostForm(){
     const {
-        register,
+        control,
         setValue,
-        formState:{ errors },
         handleSubmit
     } = useForm();
     const {
@@ -94,17 +93,17 @@ function PostForm(){
         {
             id: 'title',
             type: 'text',
-            label: 'post title',
+            label: 'Post Title',
             className: 'form__input',
             validations: {
                 required: true,
-                maxLength: 55
+                maxLength: 100
             }
         },
         {
             id: 'body',
             type: 'text',
-            label: 'post body',
+            label: 'Post Body',
             className: 'form__input--multiline',
             validations: {
                 required: true,
@@ -123,8 +122,28 @@ function PostForm(){
         }
     }, [])
 
+    const errorMsg = (error) => {
+        let msg = ''
+        const field = error?.ref.name
+
+        if (error?.type === 'required') {
+            msg = `${field[0].toUpperCase() + field.substring(1)} is a required field.`
+        }
+        if (error?.type === 'maxLength'){
+            const input = formInputs.find(input => input.id === field)
+
+            msg = `${field[0].toUpperCase() + field.substring(1)} cannot exceed ${input.validations.maxLength} characters`
+        }
+
+        return msg
+    }
+
     return(
-        <Form
+        <PageLayout
+            title={'Form'}
+            subtitle={'Posts Form'}
+        >
+            <Form
             title={idPost ? `Edit post #${idPost}` : 'Create a new post'}
             handleSubmit={handleSubmit(onSubmit)}
             buttons={
@@ -144,25 +163,47 @@ function PostForm(){
                 </>
             }
         >
-            {
-                formInputs.map( entry => (
-                    <InputContainer
-                        key={entry.id}
-                    >
-                        <Label htmlFor={entry.id} label={entry.label} />
-                        <Input 
-                            id={entry.id}
-                            type={entry.type}
-                            className={entry.className}
-                            
-                            refs={{
-                                ...register(entry.id, {...entry.validations})
-                            }}
+            <Controller 
+                key={formInputs[0].id}
+                name={formInputs[0].id}
+                control={control}
+                rules={formInputs[0].validations}
+                render={
+                    ({field: {onChange, value}, fieldState: {error}}) => (
+                        <TextField 
+                            onChange={onChange}
+                            value={value}
+                            label={formInputs[0].label}
+                            error={!!error}
+                            helperText={errorMsg(error)}
+                            InputLabelProps={{shrink: true}}
+                            variant='filled'
                         />
-                    </InputContainer>
-                ))
-            }
+                    )
+                }
+            />
+            <Controller 
+                key={formInputs[1].id}
+                name={formInputs[1].id}
+                control={control}
+                rules={formInputs[1].validations}
+                render={
+                    ({field: {onChange, value}, fieldState: {error}}) => (
+                        <TextField 
+                            onChange={onChange}
+                            value={value}
+                            label={formInputs[1].label}
+                            error={!!error}
+                            helperText={errorMsg(error)}
+                            InputLabelProps={{shrink: true}}
+                            variant='filled'
+                            multiline
+                        />
+                    )
+                }
+            />
         </Form>
+        </PageLayout>
     )
 }
 

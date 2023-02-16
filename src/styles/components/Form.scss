@@ -1,0 +1,32 @@
+$medium: 769px;
+
+.form{
+    background-color: #ffffff;
+    width: 100%;
+    height: fit-content;
+    padding: 25px 25px;
+    border: 2px solid #e6e6e6;
+    border-radius: 5px;
+    margin: auto;
+
+
+    &__title{
+        padding: 15px 0;
+        font-size: 1.2rem;
+        font-weight: 400;
+    }
+
+    &__inputs{
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    &__buttons{
+        display: flex;
+        gap:15px;
+        justify-content: flex-end;
+        padding: 25px 0 0;
+    }
+
+}

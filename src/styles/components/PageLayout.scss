@@ -1,0 +1,15 @@
+@import '@styles/variables';
+
+.main{
+    width: 100%;
+    max-width: $medium;
+    padding: 0 5px;
+    margin: auto;
+
+    & > h1 {
+        padding: 15px 0 15px 2px;
+    }
+    & > h2 {
+        padding: 15px 0 25px 0;
+    }
+}

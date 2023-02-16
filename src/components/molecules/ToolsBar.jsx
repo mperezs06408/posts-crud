@@ -1,19 +1,9 @@
-import Label from '@components/atoms/Label'
-import Input from '@components/atoms/Input'
 import CreateButton from '@components/atoms/CreateButton'
-import InputContainer from '@components/molecules/InputContainer'
+import Input from '@mui/material/Input'
 import { useContext } from 'react'
 import { PostsContext } from '@components/templates/Context'
+import '@styles/components/Toolsbar.scss'
 
-const COMPONENTS_PROPERTIES = {
-    label: {
-        className: 'toolsbar__label'
-    },
-    input: {
-        type: 'text',
-        className: 'toolsbar__input'
-    }
-}
 
 function ToolsBar({id, label}){
     const {
@@ -23,20 +13,14 @@ function ToolsBar({id, label}){
 
     return(
         <section className="toolsbar">
-            <InputContainer>
-                <Label 
-                    htmlFor={id}
-                    label={label}
-                    className={COMPONENTS_PROPERTIES.label.className}
-                />
-                <Input 
-                    type={COMPONENTS_PROPERTIES.input.type}
-                    id={id}
-                    value={searchBar}
-                    handleChange={handleSearchBarChange}
-                    className={COMPONENTS_PROPERTIES.input.className}
-                />
-            </InputContainer>
+            <Input 
+                id={id}
+                placeholder={label}
+                value={searchBar}
+                onChange={handleSearchBarChange}
+                variant='standard'
+                sx={{backgroundColor: '#ffffff', width: '100%'}}
+            />
             <CreateButton />
         </section>
     )

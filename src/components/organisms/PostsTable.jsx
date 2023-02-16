@@ -5,49 +5,54 @@ import TableHead from "@mui/material/TableHead  ";
 import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
-import EditIcon from '@mui/icons-material/Edit';
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from '@mui/icons-material/Delete'
-import TableSortLabel from "@mui/material/TableSortLabel";
-import Alert from "@mui/material/Alert";
-import ModalComponent from "../atoms/ModalComponent";
-import FormButton from "../atoms/FormButton";
 import TablePagination from "@mui/material/TablePagination";
+import IconButton from "@mui/material/IconButton";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ModalComponent from "@components/atoms/ModalComponent";
+import FormButton from "@components/atoms/FormButton";
+import { PostsContext } from "@components/templates/Context";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { PostsContext } from "@components/templates/Context";
-import { Collapse } from "@mui/material";
+import { TABLE_COLUMNS } from "@/assets/dictionary";
 
-const TABLE_COLUMNS = [
-  {
-    id:'actions',
-    label: 'Actions'
+const ACTIONS = {
+  DELETE: 'delete'
+}
+
+const TABLE_STYLES = {
+  table_sx: {
+    backgroundColor: '#ffffff', 
+    minWidth: 360, 
+    maxWidth: 769
   },
-  {
-    id: 'Id',
-    label: '#',
-  },{
-    id: 'title',
-    label: 'Post Title',
-  },{
-    id: 'body',
-    label: 'Post Body',
+  tableHead_sx: {
+    backgroundColor:'#000'
+  },
+  tableHeadCell_sx: {
+    color:'#fff'
+  },
+  tableCellBtns_sx: {
+    width:'105px'
+  },
+  tablePagination_sx: {
+    minWidth: 360, 
+    maxWidth: 769
   }
-]
+}
 
-function PostsTable(){
+const ROWS_OPTIONS = [5,10,15]
+
+
+function PostsTable({data}){
     const {
-        posts,
-        setPosts,
-        postsFiltered,
         page,
-        setPage,
         rowsPerPage,
-        setRowsPerPage,
         initRow,
         finishRow,
-        postsDeleted,
-        setPostsDeleted
+        handleChangePage,
+        handleChangeRowsPerPage,
+        dropPostFromList
     } = useContext(PostsContext);
     const navigation = useNavigate();
     const [modalData, setModalData] = useState({
@@ -63,22 +68,13 @@ function PostsTable(){
         currentItem
     } = modalData;
 
-    const handleChangePage = (event, newPage) => {
-      setPage(newPage);
-    };
-  
-    const handleChangeRowsPerPage = (event) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
-      setPage(0);
-    }
-
     const onEditRow = (id) => {
       console.log(id)
       navigation(`/form/${id}`)
     }
 
     const openModal = (action, item = null) => {
-      if (action === 'DELETE') {
+      if (action === ACTIONS.DELETE) {
         setModalData({
           modalOpen: true,
           modalTitle: 'Are you sure?',
@@ -97,26 +93,23 @@ function PostsTable(){
     }
 
     const onDeletePost = () => {
-      const postListCopy = [...posts]
-
-      setPosts(postListCopy.filter( post => post.id !== currentItem));
-      setPostsDeleted(postsDeleted + 1)
+      dropPostFromList(currentItem)
       onCloseModal();
     }
 
     return(
       <Box>
         <TableContainer>
-          <Table sx={{backgroundColor: '#ffffff', minWidth: 360, maxWidth: 769}} area-label="simple table">
+          <Table sx={TABLE_STYLES.table_sx} area-label="simple table">
             <TableHead
-              sx={{backgroundColor:'#000'}}
+              sx={TABLE_STYLES.tableHead_sx}
             >
               <TableRow>
                 {
                   TABLE_COLUMNS.map( column => (
                     <TableCell
                       key={column.id}
-                      sx={{color:'#fff'}}
+                      sx={TABLE_STYLES.tableHeadCell_sx}
                     >
                       {column.label}
                     </TableCell>
@@ -126,12 +119,12 @@ function PostsTable(){
             </TableHead>
             <TableBody>
               {
-                postsFiltered.slice(initRow() ,finishRow()).map((post) => (
+                  data.slice(initRow() ,finishRow()).map((post) => (
                   <TableRow
                     key={post.id}
                   >
                     <TableCell
-                      sx={{width:'105px'}}
+                      sx={TABLE_STYLES.tableCellBtns_sx}
                     >
                       <IconButton
                         onClick={() => onEditRow(post.id)}
@@ -139,7 +132,7 @@ function PostsTable(){
                         <EditIcon fontSize="small" />
                       </IconButton>
                       <IconButton
-                        onClick={() => openModal('DELETE', post.id)}
+                        onClick={() => openModal(ACTIONS.DELETE, post.id)}
                       >
                         <DeleteIcon fontSize="small" />
                       </IconButton>
@@ -155,10 +148,10 @@ function PostsTable(){
           </Table>
         </TableContainer>
         <TablePagination 
-          sx={{minWidth: 360, maxWidth: 769}}
-          rowsPerPageOptions={[5,10,15]}
+          sx={TABLE_STYLES.tablePagination_sx}
+          rowsPerPageOptions={ROWS_OPTIONS}
           component='div'
-          count={postsFiltered.length}
+          count={data.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

@@ -16,8 +16,8 @@ export const createPost = async (body) => {
     return request
 }
 
-export const setPost = async (idPost, body) => {
-    const request = await axiosInstance.patch(`/posts/${idPost}`, body);
+// export const setPost = async (idPost, body) => {
+//     const request = await axiosInstance.patch(`/posts/${idPost}`, body);
 
-    return request
-}
+//     return request
+// }

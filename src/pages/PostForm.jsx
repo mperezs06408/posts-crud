@@ -1,14 +1,14 @@
-import Form from '@components/organisms/Form'
-import FormButton from '@components/atoms/FormButton'
-import { useForm } from 'react-hook-form'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useContext, useEffect, useState } from 'react'
-import { PostsContext } from '@components/templates/Context';
-import { createPost, setPost } from '@/api/APIConsume'
+import { createPost } from '@/api/APIConsume'
 import TextField from '@mui/material/TextField'
-import { Controller } from 'react-hook-form'
-import PageLayout from '../components/templates/PageLayout'
 import ModalComponent from '@components/atoms/ModalComponent'
+import FormButton from '@components/atoms/FormButton'
+import Form from '@components/organisms/Form'
+import PageLayout from '@components/templates/PageLayout'
+import { PostsContext } from '@components/templates/Context';
+import { useContext, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useForm, Controller } from 'react-hook-form'
+import { FORM_PAGE as PAGE_DATA } from '@/assets/dictionary'
 
 function PostForm(){
     const {
@@ -21,8 +21,8 @@ function PostForm(){
     } = useParams();
     const {
         posts,
-        setPosts,
-        postsDeleted
+        setPost,
+        updatePost,
     } = useContext(PostsContext);
     const [modalData, setModalData] = useState({
         modalOpen: false,
@@ -34,8 +34,17 @@ function PostForm(){
         modalTitle,
         modalSubtitle
     } = modalData;
-
     const navigate = useNavigate();
+
+    useEffect(()=> {
+        if (idPost) {
+            const post = posts.find(post => post.id === parseInt(idPost))
+    
+            if (post) {
+                formInputs.map(entry => setValue(entry.id, post[entry.id]))
+            }
+        }
+    }, [])
 
     const onSubmit = async (data) => {
         const postContent = {
@@ -43,50 +52,35 @@ function PostForm(){
             body: data.body
         }
         if (idPost) {
-            console.log('yes')
-            try {
-                /*Just emulated functionality*/
-                const postEdited = await setPost(postContent)
-            } catch (e) {
-                console.log(`Error retieving a post with ${idPost} Id, maybe it is just available from local app`)
-            }
-            const post = posts.find(post => post.id === parseInt(idPost))
+            const updatePostFromOrigin = updatePost(idPost, postContent)
 
-            if (post) {
-                const postIndexOf = posts.indexOf( post )
-                const postListCopy = [...posts]
-                const newPost = {
-                    ...post,
-                    ...postContent
-                }
-
-                postListCopy[postIndexOf] = newPost
-
-                setPosts(postListCopy)
+            if (updatePostFromOrigin) {
                 setModalData({
                     modalOpen: true,
                     modalTitle: 'Post updated!',
-                    modalSubtitle: `#${post.id}: ${postContent.title.toUpperCase()}`
+                    modalSubtitle: `#${idPost}: ${postContent.title.toUpperCase()}`
                 })
-                // navigate('/');
+            } else {
+                setModalData({
+                    modalOpen: true,
+                    modalTitle: 'Something went wrong!',
+                    modalSubtitle: `Please try it later.`
+                })
             }
+            
         } else {
             try {
-                const newPost = await createPost(postContent)
+                /**Emulated POST method */
+                const request = await createPost(postContent)
+                const newPost = request.data
+
+                const successfulAction = setPost(newPost)
                 
-                setPosts([
-                    {
-                        ...newPost.data,
-                        id: posts.length + postsDeleted + 1
-                    },
-                    ...posts
-                ])
                 setModalData({
                     modalOpen: true,
                     modalTitle: 'Post created!',
-                    modalSubtitle: `#${posts.length + postsDeleted + 1}: ${postContent.title.toUpperCase()}`
+                    modalSubtitle: `#${successfulAction}: ${postContent.title.toUpperCase()}`
                 })
-                // navigate('/');
             } catch(e){
                 console.error(`Error during post creation: ${e}`)
             }
@@ -104,7 +98,21 @@ function PostForm(){
         })
         formInputs.map(entry => setValue(entry.id, ''))
     }
+    const errorMsg = (error) => {
+        let msg = ''
+        const field = error?.ref.name
 
+        if (error?.type === 'required') {
+            msg = `${field[0].toUpperCase() + field.substring(1)} is a required field.`
+        }
+        if (error?.type === 'maxLength'){
+            const input = formInputs.find(input => input.id === field)
+
+            msg = `${field[0].toUpperCase() + field.substring(1)} cannot exceed ${input.validations.maxLength} characters`
+        }
+
+        return msg
+    }
     const formButtons = [
         {
             id: 'cancelButton',
@@ -125,7 +133,6 @@ function PostForm(){
             id: 'title',
             type: 'text',
             label: 'Post Title',
-            className: 'form__input',
             validations: {
                 required: true,
                 maxLength: 100
@@ -135,7 +142,6 @@ function PostForm(){
             id: 'body',
             type: 'text',
             label: 'Post Body',
-            className: 'form__input--multiline',
             validations: {
                 required: true,
                 maxLength: 2000
@@ -143,39 +149,13 @@ function PostForm(){
         }
     ]
 
-    useEffect(()=> {
-        if (idPost) {
-            const post = posts.find(post => post.id === parseInt(idPost))
-    
-            if (post) {
-                formInputs.map(entry => setValue(entry.id, post[entry.id]))
-            }
-        }
-    }, [])
-
-    const errorMsg = (error) => {
-        let msg = ''
-        const field = error?.ref.name
-
-        if (error?.type === 'required') {
-            msg = `${field[0].toUpperCase() + field.substring(1)} is a required field.`
-        }
-        if (error?.type === 'maxLength'){
-            const input = formInputs.find(input => input.id === field)
-
-            msg = `${field[0].toUpperCase() + field.substring(1)} cannot exceed ${input.validations.maxLength} characters`
-        }
-
-        return msg
-    }
-
     return(
         <PageLayout
-            title={'Form'}
-            subtitle={'Posts Form'}
+            title={PAGE_DATA.title}
+            subtitle={PAGE_DATA.subtitle}
         >
             <Form
-            title={idPost ? `Edit post #${idPost}` : 'Create a new post'}
+            title={idPost ? PAGE_DATA.form_edit_title(idPost) : PAGE_DATA.form_title}
             handleSubmit={handleSubmit(onSubmit)}
             buttons={
                 <>
@@ -185,7 +165,6 @@ function PostForm(){
                                 key={button.id}
                                 id={button.id}
                                 type={button.type}
-                                className={button.className}
                                 label={button.label}
                                 onClick={button?.onClickAction}
                             />

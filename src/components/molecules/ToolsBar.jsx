@@ -1,25 +1,24 @@
-import CreateButton from '@components/atoms/CreateButton'
 import Input from '@mui/material/Input'
-import { useContext } from 'react'
-import { PostsContext } from '@components/templates/Context'
+import CreateButton from '@components/atoms/CreateButton'
 import '@styles/components/Toolsbar.scss'
 
+const Input_Styles = {backgroundColor: '#ffffff', width: '100%'}
 
-function ToolsBar({id, label}){
-    const {
-        searchBar,
-        handleSearchBarChange
-    } = useContext(PostsContext);
+function ToolsBar({id, searchedItem, handleChange, label}){
+
+    const onChange = (e) => {
+        handleChange(e.target.value)
+    }
 
     return(
         <section className="toolsbar">
             <Input 
                 id={id}
                 placeholder={label}
-                value={searchBar}
-                onChange={handleSearchBarChange}
+                value={searchedItem}
+                onChange={onChange}
                 variant='standard'
-                sx={{backgroundColor: '#ffffff', width: '100%'}}
+                sx={Input_Styles}
             />
             <CreateButton />
         </section>

@@ -1,7 +1,6 @@
 import ReactDOM from "react-dom"
 import Modal from "@mui/material/Modal"
-import Box from "@mui/material/Box"
-import { Button, Card } from "@mui/material"
+import Card from "@mui/material/Card"
 import '@styles/components/Modal.scss';
 
 function ModalComponent({isOpen, title, subtitle, buttons}){

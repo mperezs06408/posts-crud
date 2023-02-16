@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button'
 
-function FormButton({id, type, className, label, onClick}){
+function FormButton({id, type, label, onClick}){
     return(
         <Button
             id={id}

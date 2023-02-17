@@ -1,5 +1,6 @@
 import PageLayout from '@components/templates/PageLayout'
 import ToolsBar from '@components/molecules/ToolsBar'
+import CollapseAlert from '@components/molecules/CollapseAlert';
 import PostsTable from '@components/organisms/PostsTable'
 import { useContext, useEffect, useState } from "react";
 import { PostsContext } from "@components/templates/Context";
@@ -11,6 +12,10 @@ function Dashboard(){
     } = useContext(PostsContext)
     const [postsFiltered, setPostsFiltered] = useState(posts) 
     const [searchedItem, setSearchedItem] = useState('')
+    const [alert, setAlert] = useState({
+        value: false,
+        label: ''
+    })
 
     useEffect(()=>{
         setPostsFiltered(posts)
@@ -34,8 +39,14 @@ function Dashboard(){
                 searchedItem={searchedItem}
                 handleChange={setSearchedItem}
             />
+            <CollapseAlert 
+                openAlert={alert.value}
+                setAlert={setAlert}
+                label={alert.label}
+            />
             <PostsTable 
                 data={postsFiltered}
+                setAlert={setAlert}
             />
         </PageLayout>
     )

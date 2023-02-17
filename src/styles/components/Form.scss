@@ -1,11 +1,12 @@
-$medium: 769px;
+@import '@styles/variables';
 
 .form{
-    background-color: #ffffff;
+    background-color: $white;
     width: 100%;
     height: fit-content;
     padding: 25px 25px;
-    border: 2px solid #e6e6e6;
+    border: 2px solid $successful;
+    box-shadow: 0 0 5px 1px $successful, 0 0 10px 2px $white;
     border-radius: 5px;
     margin: auto;
 

@@ -1,6 +1,6 @@
 /**Pages */
 export const DASHBOARD_PAGE = {
-    title: 'Data table',
+    title: 'Datatable',
     subtitle: 'Posts Dashboard',
     ToolsBarLabel: 'Search by Title'
 }
@@ -30,3 +30,12 @@ export const TABLE_COLUMNS = [
       label: 'Post Body',
     }
   ]
+
+export const COLORS_SCSS = {
+  white: '#FFFFFF',
+  black: '#000000',
+  primary: '#03001C',
+  secondary: '#89C4E1',
+  terciary:'#4B56D2',
+  warning: '#EB455F'
+}

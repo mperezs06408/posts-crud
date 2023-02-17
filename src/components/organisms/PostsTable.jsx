@@ -7,6 +7,7 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TablePagination from "@mui/material/TablePagination";
 import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ModalComponent from "@components/atoms/ModalComponent";
@@ -14,7 +15,7 @@ import FormButton from "@components/atoms/FormButton";
 import { PostsContext } from "@components/templates/Context";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TABLE_COLUMNS } from "@/assets/dictionary";
+import { TABLE_COLUMNS, COLORS_SCSS } from "@/assets/dictionary";
 
 const ACTIONS = {
   DELETE: 'delete'
@@ -22,29 +23,38 @@ const ACTIONS = {
 
 const TABLE_STYLES = {
   table_sx: {
-    backgroundColor: '#ffffff', 
+    backgroundColor: COLORS_SCSS.white, 
     minWidth: 360, 
     maxWidth: 769
   },
   tableHead_sx: {
-    backgroundColor:'#000'
+    backgroundColor: COLORS_SCSS.primary,
   },
   tableHeadCell_sx: {
-    color:'#fff'
+    color: COLORS_SCSS.secondary
   },
   tableCellBtns_sx: {
-    width:'105px'
+    width:'105px',
+    borderColor: COLORS_SCSS.secondary
+  },
+  tableIcons_sx: {
+    fill: COLORS_SCSS.warning,
+  },
+  tableCells_sx: {
+    color: COLORS_SCSS.primary,
+    borderColor: COLORS_SCSS.secondary
   },
   tablePagination_sx: {
     minWidth: 360, 
-    maxWidth: 769
+    maxWidth: 769,
+    color: COLORS_SCSS.primary
   }
 }
 
 const ROWS_OPTIONS = [5,10,15]
 
 
-function PostsTable({data}){
+function PostsTable({data, setAlert}){
     const {
         page,
         rowsPerPage,
@@ -93,7 +103,12 @@ function PostsTable({data}){
     }
 
     const onDeletePost = () => {
-      dropPostFromList(currentItem)
+      const idDropped = dropPostFromList(currentItem)
+      
+      setAlert({
+        value:true,
+        label: `Post No.${idDropped} was successfully deleted from database`
+      })
       onCloseModal();
     }
 
@@ -110,6 +125,7 @@ function PostsTable({data}){
                     <TableCell
                       key={column.id}
                       sx={TABLE_STYLES.tableHeadCell_sx}
+                      align='center'
                     >
                       {column.label}
                     </TableCell>
@@ -122,25 +138,33 @@ function PostsTable({data}){
                   data.slice(initRow() ,finishRow()).map((post) => (
                   <TableRow
                     key={post.id}
+                    sx={{
+                      borderBottomColor: 'white'
+                    }}
                   >
                     <TableCell
                       sx={TABLE_STYLES.tableCellBtns_sx}
+                      align='left'
                     >
-                      <IconButton
-                        onClick={() => onEditRow(post.id)}
-                      >
-                        <EditIcon fontSize="small" />
+                      <Tooltip title="Edit row">
+                        <IconButton
+                          onClick={() => onEditRow(post.id)}
+                        >
+                          <EditIcon fontSize="small" sx={TABLE_STYLES.tableIcons_sx} />
                       </IconButton>
-                      <IconButton
-                        onClick={() => openModal(ACTIONS.DELETE, post.id)}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
+                      </Tooltip>
+                      <Tooltip title='Delete row'>
+                        <IconButton
+                          onClick={() => openModal(ACTIONS.DELETE, post.id)}
+                        >
+                          <DeleteIcon fontSize="small" sx={TABLE_STYLES.tableIcons_sx} />
+                        </IconButton>
+                      </Tooltip>
                       
                     </TableCell>
-                    <TableCell>{post.id}</TableCell>
-                    <TableCell>{post.title}</TableCell>
-                    <TableCell>{post.body}</TableCell>
+                    <TableCell sx={TABLE_STYLES.tableCells_sx}>{post.id}</TableCell>
+                    <TableCell sx={TABLE_STYLES.tableCells_sx}>{post.title}</TableCell>
+                    <TableCell sx={TABLE_STYLES.tableCells_sx}>{post.body}</TableCell>
                   </TableRow>
                 ))
               }
@@ -171,7 +195,7 @@ function PostsTable({data}){
                     />
                     <FormButton 
                         id={'modal-continue'}
-                        type={'submit'}
+                        type={'delete'}
                         label={'Continue'}
                         onClick={() => onDeletePost()}
                     />

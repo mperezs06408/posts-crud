@@ -57,6 +57,8 @@ const PostsProvider = ({children}) => {
 
     setPosts(postListCopy.filter( post => post.id !== id));
     setPostsDeleted(postsDeleted + 1)
+
+    return id
   }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

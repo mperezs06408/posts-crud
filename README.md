@@ -24,6 +24,21 @@ To test Post Manager CRUD online please check this [link](https://posts-crud-bet
 
 Posts Manager CRUD was deployed on Vercel.
 
+### Use of Posts CRUD
+
+1. Open the vecel's link or clone this repo in your localhost and run dev environment
+
+2. In the main page (Datatable) you can manage your posts click in the buttons located in the first column (Edit post and Delete Post)
+
+3. To create new post you should click on the plus button aside the search bar
+
+4. To create new post all form fields (Title and Body) are required. Then if some input is empty, the form will deny your action and an error message will be shown with their respective problem
+
+4. To edit a created post previously, you should to click on pencil icon (Actions column) and the crud will open an edit form. This form has the same validation as when we are creating a new post
+
+5. To delete a post you should to click on trash icon (Actions column) and the crud will open a modal to confirm your action. Delete a post is an irreversible action
+
+6. If you click on Continue button in delete post modal, the page will show an Alert over the table to inform you that delete action was completed successfully
 
 ## Visuals
 

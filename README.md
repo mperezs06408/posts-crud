@@ -20,7 +20,9 @@ App will run over 8080 port in [LocalHost](http://localhost:8080/)
 
 ### Public use
 
-This app will be deploy in a vercel hosting environment to test its functionalities over the internet.
+To test Post Manager CRUD online please check this [link](https://posts-crud-beta.vercel.app/)
+
+Posts Manager CRUD was deployed on Vercel.
 
 
 ## Visuals

@@ -5,6 +5,7 @@ import TableHead from "@mui/material/TableHead  ";
 import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import TablePagination from "@mui/material/TablePagination";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
@@ -44,6 +45,20 @@ const TABLE_STYLES = {
     color: COLORS_SCSS.primary,
     borderColor: COLORS_SCSS.secondary
   },
+  tableSort_sx:{
+    '&.MuiTableSortLabel-root': {
+        color: COLORS_SCSS.secondary,
+      },
+    '&.MuiTableSortLabel-root:hover': {
+        color: COLORS_SCSS.secondary,
+      },
+    '&.Mui-active': {
+        color: COLORS_SCSS.secondary,
+      },
+    '& .MuiTableSortLabel-icon': {
+        color: `${COLORS_SCSS.secondary} !important`,
+      },
+  },
   tablePagination_sx: {
     minWidth: 360, 
     maxWidth: 769,
@@ -54,7 +69,7 @@ const TABLE_STYLES = {
 const ROWS_OPTIONS = [5,10,15]
 
 
-function PostsTable({data, setAlert}){
+function PostsTable({data, order, handleOrder, setAlert}){
     const {
         page,
         rowsPerPage,
@@ -127,7 +142,21 @@ function PostsTable({data, setAlert}){
                       sx={TABLE_STYLES.tableHeadCell_sx}
                       align='center'
                     >
-                      {column.label}
+                      {
+                        column.id === TABLE_COLUMNS[1].id &&
+                        <TableSortLabel
+                          active
+                          direction={order}
+                          onClick={handleOrder}
+                          sx={TABLE_STYLES.tableSort_sx}
+                        >
+                          {column.label}
+                        </TableSortLabel>
+                      }
+                      {
+                        column.id !== TABLE_COLUMNS[1].id &&
+                        column.label
+                      }
                     </TableCell>
                   ))
                 }

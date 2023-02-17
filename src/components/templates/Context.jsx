@@ -70,6 +70,7 @@ const PostsProvider = ({children}) => {
 
   const context = {
     posts,
+    setPosts,
     setPost,
     updatePost,
     page,

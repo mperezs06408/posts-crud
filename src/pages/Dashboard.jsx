@@ -8,7 +8,8 @@ import { DASHBOARD_PAGE as PAGE_DATA } from '@/assets/dictionary';
 
 function Dashboard(){
     const {
-        posts
+        posts,
+        setPosts
     } = useContext(PostsContext)
     const [postsFiltered, setPostsFiltered] = useState(posts) 
     const [searchedItem, setSearchedItem] = useState('')
@@ -16,6 +17,7 @@ function Dashboard(){
         value: false,
         label: ''
     })
+    const [order,setOrder] = useState('asc')
 
     useEffect(()=>{
         setPostsFiltered(posts)
@@ -28,6 +30,24 @@ function Dashboard(){
 
         setPostsFiltered(newPostsList);
     },[searchedItem])
+
+    const manageOrderTable = (orderBy) => {
+        const newPostList = [...postsFiltered].sort((a,b) =>{
+            if (orderBy === 'asc') {
+                return a.id - b.id
+            }
+            return b.id - a.id
+        });
+
+        setPosts(newPostList);
+    }
+
+    const handleOrder = () => {
+        const state = order === 'asc' ? 'desc' : 'asc';
+  
+        manageOrderTable(state);
+        setOrder(state)
+      }
 
     return(
         <PageLayout
@@ -46,7 +66,10 @@ function Dashboard(){
             />
             <PostsTable 
                 data={postsFiltered}
+                order={order}
+                handleOrder={handleOrder}
                 setAlert={setAlert}
+
             />
         </PageLayout>
     )

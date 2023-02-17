@@ -102,8 +102,8 @@ function PostsTable({data, order, handleOrder, setAlert}){
       if (action === ACTIONS.DELETE) {
         setModalData({
           modalOpen: true,
-          modalTitle: 'Are you sure?',
-          modalSubtitle: 'This action cannot be reversed',
+          modalTitle: `No. ${item} post wil be deleted`,
+          modalSubtitle: 'Are you sure? This action cannot be reversed',
           currentItem: item
         })
       }

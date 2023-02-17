@@ -25,7 +25,7 @@ function Dashboard(){
     useEffect(()=>{
         let newPostsList = posts
         if (searchedItem !== '') {
-            newPostsList = newPostsList.filter(post => post.title.includes(searchedItem))
+            newPostsList = newPostsList.filter(post => post.title.toLowerCase().includes(searchedItem.toLowerCase()))
         }
 
         setPostsFiltered(newPostsList);

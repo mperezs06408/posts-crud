@@ -1,6 +1,6 @@
 import Router from "@/router/Router";
 import PostsProvider from "./components/templates/Context";
-import { BrowserRouter, Link } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
   return (
